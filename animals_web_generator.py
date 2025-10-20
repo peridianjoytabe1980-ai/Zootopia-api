@@ -1,6 +1,4 @@
-def load_data(file_path):
-    with open(file_path, "r") as handle:
-        return json.load(handle)
+import data_fetcher
 
 # Serialize a single animal into HTML
 def serialize_animal(animal):
@@ -24,11 +22,15 @@ def serialize_animal(animal):
 with open("animals_template.html", "r") as file:
     template_content = file.read()
 
-# Load animals data
-animals = load_data("animals_data.json")
+# Fetch animals from API
+animal_name = input("Enter a name of an animal: ")
+animals = data_fetcher.fetch_data(animal_name)
 
-# Generate full HTML content without using a for loop
-output = ''.join(map(serialize_animal, animals))
+# Generate full HTML content
+if animals:
+    output = ''.join(map(serialize_animal, animals))
+else:
+    output = f"<h2>The animal '{animal_name}' doesn't exist.</h2>"
 
 # Replace placeholder in template
 new_html = template_content.replace("__REPLACE_ANIMALS_INFO__", output)
